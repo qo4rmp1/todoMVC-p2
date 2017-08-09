@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Http } from "@angular/http";
+import { DataService } from './data.service';
 
 @Component({
   selector: 'app-root',
@@ -10,15 +11,15 @@ export class AppComponent implements OnInit{
   inputHint = 'What needs to be done?';
   todos: any[] = [];
   todo = '';
-  private apiUrl = 'http://localhost:3000/todos';
-  constructor(private http: Http) {
+
+  constructor(private dataSvc: DataService) {
 
   }
 
   ngOnInit() {
-    this.http.get(this.apiUrl)
+    this.dataSvc.addTodo()
     .subscribe(src=> {
-      this.todos = src.json();
+      this.todos = src;
     });
   }
 
@@ -29,8 +30,8 @@ export class AppComponent implements OnInit{
         done: false
       }
 
-      this.http.post(this.apiUrl, newtodo).subscribe(src=>{
-        let data = src.json();
+      this.dataSvc.postTodo(newtodo).subscribe(src=>{
+        let data = src;
         this.todos = [...this.todos];
         this.todos.push(data);
         this.todo = '';
@@ -44,7 +45,7 @@ export class AppComponent implements OnInit{
     });
 
     this.todos.forEach(todo=> {
-      this.http.put(`${this.apiUrl}/${todo.id}`, todo).subscribe();
+      this.dataSvc.putTodo(todo).subscribe();
     })
   }
 
@@ -57,7 +58,7 @@ export class AppComponent implements OnInit{
   doToggleAll(val) {
     this.todos.forEach(todo=>{
       todo.done = val;
-      this.http.put(`${this.apiUrl}/${todo.id}`, todo).subscribe();
+      this.dataSvc.putTodo(todo).subscribe();
     });
   }
 
@@ -68,7 +69,7 @@ export class AppComponent implements OnInit{
   }
 
   removeTodo(todo) {
-    this.http.delete(`${this.apiUrl}/${todo.id}`).subscribe(res => {
+    this.dataSvc.deleteTodo(todo).subscribe(res => {
       this.todos = this.todos.filter(item => {
          return item.id != todo.id;
       });
@@ -76,7 +77,7 @@ export class AppComponent implements OnInit{
   }
 
   updateTodo(todo) {
-    this.http.put(`${this.apiUrl}/${todo.id}`, todo).subscribe();
+    this.dataSvc.putTodo(todo).subscribe();
     this.updateToggleAllState();
   }
 }
