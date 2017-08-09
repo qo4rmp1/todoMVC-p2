@@ -19,6 +19,6 @@ export class AppComponent {
   }
 
   doClertodos() {
-    this.todos = this.todos.filter(todo=>{!todo.done});
+    this.todos = this.todos.filter(todo=>{ return !todo.done; });
   }
 }
