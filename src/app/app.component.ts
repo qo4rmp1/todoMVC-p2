@@ -26,4 +26,13 @@ export class AppComponent {
   doChangeFilterType(val) {
     this.filterType = val;
   }
+
+  toggleAll: boolean = false;
+  doToggleAll(val) {
+    this.todos.forEach(items=>{items.done = val});
+  }
+
+  updateToggleAllState() {
+    this.toggleAll = this.todos.filter(item=>{ return !item.done; }).length === 0;
+  }
 }
