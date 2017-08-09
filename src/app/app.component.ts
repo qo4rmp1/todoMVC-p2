@@ -17,4 +17,8 @@ export class AppComponent {
     });
     this.todo = '';
   }
+
+  doClertodos() {
+    this.todos = this.todos.filter(todo=>{!todo.done});
+  }
 }
