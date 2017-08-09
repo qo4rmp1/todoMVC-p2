@@ -1,33 +1,51 @@
-import {HttpModule} from '@angular/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Http } from "@angular/http";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   inputHint = 'What needs to be done?';
   todos: any[] = [];
   todo = '';
+  private apiUrl = 'http://localhost:3000/todos';
+  constructor(private http: Http) {
 
-  constructor(private http: HttpModule) {
+  }
 
+  ngOnInit() {
+    this.http.get(this.apiUrl)
+    .subscribe(src=> {
+      this.todos = src.json();
+    });
   }
 
   addtodo() {
     if (this.todo) {
-      this.todos = [...this.todos];
-      this.todos.push({
+      let newtodo = {
         title: this.todo,
         done: false
-      });
-      this.todo = '';
+      }
+
+      this.http.post(this.apiUrl, newtodo).subscribe(src=>{
+        let data = src.json();
+        this.todos = [...this.todos];
+        this.todos.push(data);
+        this.todo = '';
+      })
     }
   }
 
   doClertodos() {
-    this.todos = this.todos.filter(todo=>{ return !todo.done; });
+    this.todos = this.todos.filter(todo=>{
+      return !todo.done;
+    });
+
+    this.todos.forEach(todo=> {
+      this.http.put(`${this.apiUrl}/${todo.id}`, todo).subscribe();
+    })
   }
 
   filterType;
@@ -37,14 +55,28 @@ export class AppComponent {
 
   toggleAll: boolean = false;
   doToggleAll(val) {
-    this.todos.forEach(items=>{items.done = val});
+    this.todos.forEach(todo=>{
+      todo.done = val;
+      this.http.put(`${this.apiUrl}/${todo.id}`, todo).subscribe();
+    });
   }
 
   updateToggleAllState() {
-    this.toggleAll = this.todos.filter(item=>{ return !item.done; }).length === 0;
+    this.toggleAll = this.todos.filter(item=>{
+      return !item.done;
+    }).length === 0;
   }
 
   removeTodo(todo) {
-    this.todos.splice(this.todos.indexOf(todo), 1);
+    this.http.delete(`${this.apiUrl}/${todo.id}`).subscribe(res => {
+      this.todos = this.todos.filter(item => {
+         return item.id != todo.id;
+      });
+    });
+  }
+
+  updateTodo(todo) {
+    this.http.put(`${this.apiUrl}/${todo.id}`, todo).subscribe();
+    this.updateToggleAllState();
   }
 }
