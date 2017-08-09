@@ -17,6 +17,7 @@ export class AppComponent {
 
   addtodo() {
     if (this.todo) {
+      this.todos = [...this.todos];
       this.todos.push({
         title: this.todo,
         done: false
