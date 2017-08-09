@@ -11,11 +11,13 @@ export class AppComponent {
   todo = '';
 
   addtodo() {
-    this.todos.push({
-      title: this.todo,
-      done: false
-    });
-    this.todo = '';
+    if (this.todo) {
+      this.todos.push({
+        title: this.todo,
+        done: false
+      });
+      this.todo = '';
+    }
   }
 
   doClertodos() {
@@ -34,5 +36,9 @@ export class AppComponent {
 
   updateToggleAllState() {
     this.toggleAll = this.todos.filter(item=>{ return !item.done; }).length === 0;
+  }
+
+  removeTodo(todo) {
+    this.todos.splice(this.todos.indexOf(todo), 1);
   }
 }
