@@ -20,4 +20,13 @@ export class FooterComponent implements OnInit {
   cleartodos() {
     this.doClertodos.emit();
   }
+
+  @Output()
+  doChangeFilterType = new EventEmitter<string>();
+
+  filterType = 'All';
+  changeFilterType(val) {
+    this.filterType = val;
+    this.doChangeFilterType.emit(this.filterType);
+  }
 }

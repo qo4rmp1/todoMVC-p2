@@ -21,4 +21,9 @@ export class AppComponent {
   doClertodos() {
     this.todos = this.todos.filter(todo=>{ return !todo.done; });
   }
+
+  filterType;
+  doChangeFilterType(val) {
+    this.filterType = val;
+  }
 }
