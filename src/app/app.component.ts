@@ -1,3 +1,4 @@
+import {HttpModule} from '@angular/http';
 import { Component } from '@angular/core';
 
 @Component({
@@ -9,6 +10,10 @@ export class AppComponent {
   inputHint = 'What needs to be done?';
   todos: any[] = [];
   todo = '';
+
+  constructor(private http: HttpModule) {
+
+  }
 
   addtodo() {
     if (this.todo) {
